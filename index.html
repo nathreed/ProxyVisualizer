@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<head><title>Network Traffic</title>
+<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<style>
+	@mixin vertical-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+	body {background-color: #1A3366; text-align: center; font-family: Helvetica;}
+	/*div {margin-left: auto; margin-right: auto; @include vertical-align;}*/
+	.parent {height: 900px;}
+	.children {position: relative; top: 50%; -webkit-transform: translateY(-50%);}
+</style>
+</head>
+<body>
+<script language="javascript" type="text/javascript">
+var wsUri = "ws://url.of.server:port"
+var output
+
+function init() {
+	output = document.getElementById('output')
+	testWebSocket()
+}
+function testWebSocket() {
+	websocket = new WebSocket(wsUri)
+	websocket.onopen = function(evt) { onOpen(evt) };
+	websocket.onclose = function(evt) { onClose(evt) };
+	websocket.onmessage = function(evt) { onMessage(evt) };
+	websocket.onerror = function(evt) { onError(evt) };
+}
+function onOpen(evt) {
+	writeToScreen("Connected to server.");
+}
+function onClose(evt) {
+	writeToScreen("Disconnected from server.");
+}
+function onMessage(evt) {
+	writeToScreen(evt.data);
+}
+function onError(evt) {
+	writeToScreen("Error: " + evt.data);
+}
+function writeToScreen(message) {
+	message = "<span style='color:" + randomColor() + "'>" + message +"</span>";
+	var pre = document.createElement("p");
+	pre.style.wordWrap = "break-word";
+	pre.innerHTML = message;
+	pre.className = "MessageClass"
+	var existingChildList = document.getElementsByTagName("p");
+	for(var i = existingChildList.length-1; i>=0; i--) {
+		var p = existingChildList[i];
+		if(p.className === "MessageClass") {
+			$("p.MessageClass").fadeOut(800, function() {
+			p.parentNode.removeChild(p);
+			output.appendChild(pre);
+			setTimeout(function() { $("p.MessageClass").fadeOut(500);}, 5000);
+		});
+			
+		}
+	}
+	if(existingChildList.length == 0) {
+		output.appendChild(pre);
+	}
+	//output.appendChild(pre);
+}
+function randomColor() {
+	//We are using a function from the Mozilla Dev Center here with hardcoded min and max
+	var randomNumber = Math.floor(Math.random() * (4 - 0) + 0);
+	switch(randomNumber) {
+		case 0:
+			return "#E6DB74";
+			break;
+		case 1:
+			return "#AE81FF";
+			break;
+		case 2:
+			return "#F92672";
+			break;
+		case 3:
+			return "#66D9EF";
+			break;
+		case 4:
+			return "#A6E22E";
+			break;
+	}
+
+}
+window.addEventListener("load", init, false);
+</script>
+<div class="parent"><div id="output" class="children"></div></div>
