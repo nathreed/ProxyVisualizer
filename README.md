@@ -2,7 +2,8 @@
 A little project using WebSockets to send URLs from squid3 proxy log to a browser using node.js as the server.
 
 #Prerequisites
-All you need is an installation of squid3 proxy with the log file at /var/log/squid3/access.log  
+- An installation of squid3 proxy with the log file at /var/log/squid3/access.log  
+- The `nodejs-websocket` module (`npm install nodejs-websocket`)
 
 #Installation
 1. Change the variable `wsUri` in `index.html` to the IP of the machine you will be running the node server on.  
